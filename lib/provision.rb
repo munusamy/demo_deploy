@@ -3,11 +3,6 @@ require 'aws-sdk'
 module Provision 
   class Deploy
 
-    Aws.config.update({
-      region: 'us-west-2',
-      credentials: Aws::Credentials.new('AKIAIID3N2E44VNBTWFA', 'kIM1hhcc2SZUjse2OIahgKdmB/PDJ4Grf0MVj99/')
-    })
-
     def run_server
       @ec2 = Aws::EC2::Client.new()
 
