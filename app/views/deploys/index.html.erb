@@ -1,0 +1,12 @@
+<h2>This is me trying to work in EC2 Provision</h2>
+
+
+<h3>The Deployment is staged at <%= Time.now %></h3>
+
+<%= link_to "Profiles", controller: "deploys" %>
+
+<%= submit_tag "Text" %>
+
+<%= form_tag '/deploys' do %>
+  <%= submit_tag %>
+<% end %>
