@@ -1,7 +1,16 @@
 require 'aws-sdk'
+require 'yaml'
 
 module Provision 
   class Deploy
+
+    cred = YAML.load_file('/home/vagrant/demo_deploy/config/aws_credential.yml')
+
+    Aws.config.update({
+      region: 'us-west-2',
+      credentials: Aws::Credentials.new(cred['credential']['aws_access_key_id'], cred['credential']['aws_secret_access_key'])
+    })
+
 
     def run_server
       @ec2 = Aws::EC2::Client.new()
@@ -46,3 +55,6 @@ module Provision
     end
   end
 end
+
+d = Provision::Deploy.new
+d.run_server
