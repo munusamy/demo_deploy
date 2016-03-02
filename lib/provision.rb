@@ -1,4 +1,5 @@
 require 'aws-sdk'
+require 'parallel'
 require 'yaml'
 
 module Provision 
@@ -29,20 +30,20 @@ module Provision
     end
 
     def ssh_run
-      
+      #later use 
     end 
 
     def show_details
-      sleep 40
+      sleep 20 
       @desc = @ec2.describe_instances({
       dry_run: false,
       instance_ids: [ @inst_id ]
       })
       @ans = Hash.new
-      #@ans[:instance_id] = @resp.instances[0].instance_id
+      @ans[:instance_id] = @resp.instances[0].instance_id
       #@ans[:public_dns_name] = @desc.reservations[0].instances[0].public_dns_name
-      @ans[:pubip] = @desc.reservations[0].instances[0].public_ip_address
-      @ans[:pvtip] = @resp.instances[0].private_ip_address
+      @ans[:public_ip] = @desc.reservations[0].instances[0].public_ip_address
+      @ans[:private_ip] = @resp.instances[0].private_ip_address
       #@ans[:private_dns_name] = @resp.instances[0].private_dns_name
       @ans
 =begin
@@ -56,5 +57,26 @@ module Provision
   end
 end
 
-d = Provision::Deploy.new
-d.run_server
+module Enumerable
+def in_parallel_n(n)
+  todo = Queue.new # Create queue
+  ts = (1..n).map{ # Start threads
+      Thread.new{
+        # Do stuff in threads
+        puts "starting"
+        Provision::Deploy.new.run_server
+        puts "Finished"
+      }
+    }
+    .each{|x| todo << x} # Push things into queue 
+    ts.each{|t| t.join} # Wait until threads finish 
+end
+end
+#@a.join
+#
+class Test
+  include Enumerable
+end
+
+m = Test.new
+m.in_parallel_n(4)
